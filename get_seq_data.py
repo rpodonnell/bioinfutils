@@ -1,7 +1,6 @@
 # This script takes in a fasta file, and outputs a csv file with the genbank accession number, genus, species, and sequence length as columns. This script assumes that each fasta header is in the format >genbank_Genus_species
 # usage 
 # python get_seq_data.py input.fasta output.csv
-
 import argparse
 import csv
 from Bio import SeqIO
@@ -10,7 +9,7 @@ def fasta_to_csv(input_file, output_file):
     # Open the output CSV file for writing
     with open(output_file, 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
-        csv_writer.writerow(['genbank_no', 'genus', 'species', 'seq_length'])
+        csv_writer.writerow(['genbank_no', 'genus', 'species', 'full_name', 'seq_length'])
 
         # Iterate through the input FASTA file and write data to the CSV
         for record in SeqIO.parse(input_file, 'fasta'):
@@ -24,8 +23,11 @@ def fasta_to_csv(input_file, output_file):
             # Calculate sequence length
             seq_length = len(record.seq)
             
+            # Combine genus and species into full_name
+            full_name = f"{genus} {species}"
+            
             # Write data to the CSV file
-            csv_writer.writerow([genbank_no, genus, species, seq_length])
+            csv_writer.writerow([genbank_no, genus, species, full_name, seq_length])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert FASTA file to CSV with header split and sequence length.")
